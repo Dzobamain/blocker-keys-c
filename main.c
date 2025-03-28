@@ -22,16 +22,16 @@ int main() {
 
     printf("Press keys (press ESC to quit):\n");
 
-    while (1) {
-        read(0, &c, 1);
-        printf("You pressed: '%c' (ASCII: %d, HEX: 0x%02X)\n", c, c, c);
+    read(0, &c, 1);
 
-        if (c == 27) { // ESC key
-            printf("Exiting...\n");
-            break;
-        }
+    if (c == 27 /* ESC */) {
+        printf("Exiting...\n");
+        reset_terminal();
+        return -1;
     }
 
+    printf("You pressed: '%c' (ASCII: %d, HEX: 0x%02X)\n", c, c, c);
+
     reset_terminal();
-    return 0;
+    return -1;
 }
