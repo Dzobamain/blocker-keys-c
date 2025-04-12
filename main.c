@@ -1,37 +1,28 @@
 #include <stdio.h>
-#include <unistd.h>
-#include <termios.h>
-
-void setup_terminal() {
-    struct termios settings;
-    tcgetattr(0, &settings);
-    settings.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(0, TCSANOW, &settings);
-}
-
-void reset_terminal() {
-    struct termios settings;
-    tcgetattr(0, &settings);
-    settings.c_lflag |= (ICANON | ECHO);
-    tcsetattr(0, TCSANOW, &settings);
-}
+#include <ncurses.h>
 
 int main() {
-    char c;
-    setup_terminal();
+    int ch;
 
-    printf("Press keys (press ESC to quit):\n");
+    initscr();
+    raw(); 
+    keypad(stdscr, TRUE);
+    noecho();
 
-    read(0, &c, 1);
+    printw("(Esc to exit):\n");
 
-    if (c == 27 /* ESC */) {
-        printf("Exiting...\n");
-        reset_terminal();
-        return -1;
+    while (1) {
+        ch = getch();
+
+        if (ch == 27) {
+            break;
+        }
+
+        printw("\%d\n", ch);
+
+        refresh();
     }
 
-    printf("You pressed: '%c' (ASCII: %d, HEX: 0x%02X)\n", c, c, c);
-
-    reset_terminal();
-    return -1;
+    endwin();
+    return 0;
 }
